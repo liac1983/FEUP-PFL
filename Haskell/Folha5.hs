@@ -135,7 +135,7 @@ main = do
     let resultado = calcular input
     putStrLn $ "Resultado: " ++ show resultado
 
--}
+
 
 module Conjunto where
 
@@ -169,3 +169,32 @@ exemploConjunto2 = adicionarElemento 3 (adicionarElemento 4 (adicionarElemento 5
 
 exemploUniao :: Conjunto Int
 exemploUniao = unirConjuntos exemploConjunto1 exemploConjunto2
+-}
+
+-- 5.4
+data Set a = EmptySet | Node a (Set a) (Set a) deriving (Show, Eq, Ord)
+
+-- Constrói um conjunto vazio
+empty :: Set a
+empty = EmptySet
+
+-- Insere um elemento no conjunto
+insert :: Ord a => a -> Set a -> Set a
+insert x EmptySet = Node x EmptySet EmptySet
+insert x (Node y left right)
+  | x == y = Node y left right  -- O elemento já está no conjunto
+  | x < y  = Node y (insert x left) right
+  | x > y  = Node y left (insert x right)
+
+-- Verifica se um elemento pertence ao conjunto
+member :: Ord a => a -> Set a -> Bool
+member _ EmptySet = False
+member x (Node y left right)
+  | x == y = True
+  | x < y  = member x left
+  | x > y  = member x right
+
+-- Criando um conjunto
+set :: Set Integer
+set = insert 1 (insert 2 (insert 3 empty))
+

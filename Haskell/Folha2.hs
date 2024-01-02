@@ -66,7 +66,7 @@ main = do
   print listaOrdenada
 
 
--}
+
 
 somaQuadrados :: Integer
 somaQuadrados = sum [x^2 | x <- [1..100]]
@@ -75,4 +75,64 @@ somaQuadrados = sum [x^2 | x <- [1..100]]
 main :: IO ()
 main = do
   putStrLn ("A soma dos quadrados de 1 a 100 é: " ++ show somaQuadrados)
+
+
+
+-- 2.2
+
+intersperse' :: a -> [a] -> [a]
+intersperse' _ [] = []
+intersperse' sep (x:xs) = x : concatMap (\y -> [sep, y]) xs
+
+
+-- 2.3
+
+mdc :: Integer -> Integer -> Integer
+mdc a 0 = a
+mdc a b = mdc b (a `mod` b)
+
+
+-- 2.5.a)
+
+minimum' :: Ord a => [a] -> a
+minimum' [x] = x
+minimum' (x:xs) = min x (minimum' xs)
+
+
+-- 2.5.b)
+
+delete' :: Eq a => a -> [a] -> [a]
+delete' _ [] = []
+delete' y (x:xs)
+  | x == y    = xs
+  | otherwise = x : delete' y xs
+
+
+-- 2.5.c)
+ssort :: Ord a => [a] -> [a]
+ssort [] = []  -- Lista vazia já está ordenada
+ssort xs = m : ssort (delete' m xs)
+  where
+    m = minimum' xs
+
+-- Definição da função minimum
+minimum' :: Ord a => [a] -> a
+minimum' [x] = x
+minimum' (x:xs) = min x (minimum' xs)
+
+-- Definição da função delete
+delete' :: Eq a => a -> [a] -> [a]
+delete' _ [] = []
+delete' y (x:xs)
+  | x == y    = xs
+  | otherwise = x : delete' y xs
+
+-}
+
+-- 2.6
+
+somaQuadrados :: Integer
+somaQuadrados = sum [x^2 | x <- [1..100]]
+
+
 
