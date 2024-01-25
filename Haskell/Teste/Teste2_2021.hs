@@ -2,10 +2,10 @@
 maxpos :: [Int] -> Int
 maxpos [] = 0
 maxpos (x:xs)
- | x > next = x
- | otherwise = next
- where
- next = maxpos xs
+    |x > next = x
+    |otherwise = next
+    where
+        next = maxpos xs 
 
 -- maxpos [1,2,3,4,5] == 5
 -- maxpos [-1,-2,-3,4,-5] == 4
@@ -15,11 +15,12 @@ maxpos (x:xs)
 -- 2
 dups :: [a] -> [a]
 dups xs = dupsAux xs True
+
 dupsAux :: [a] -> Bool -> [a]
-dupsAux [] _ = []
-dupsAux (x:xs) r
- | r = x : x : dupsAux xs False
- | otherwise = x : dupsAux xs True
+dupsAux []_ = []
+dupsAux (x:xs) r 
+    |r = x:x:dupsAux xs False
+    |otherwise = x:dupsAux xs True
 
 -- dups "abcdef" == "aabccdeef"
 -- dups [0,1,2,3,4] == [0,0,1,2,2,3,4,4]
@@ -27,10 +28,10 @@ dupsAux (x:xs) r
 
 -- 3
 transforma :: String -> String
-transforma [] = []
+transfroma [] = []
 transforma (x:xs)
- | x == 'a' || x == 'e' || x == 'i' || x == 'o' || x == 'u' = x : 'p' : x : transforma xs
- | otherwise = x : transforma xs
+    |x == 'a'||x=='e'||x == 'i'||x=='o'||x=='u' = x:'p':x:transforma xs
+    |otherwise = x:transforma xs
 
 -- transforma "ola, mundo!" == "opolapa, mupundopo!"
 -- transforma "4 gatos e 3 ratos" == "4 gapatopos epe 3 rapatopos"
@@ -42,8 +43,8 @@ type Matriz = [[Int]]
 
 -- 4
 transposta :: Matriz -> Matriz
-transposta [] = []
-transposta m = [head x | x <- m] : transposta [tail x | x <- m, tail x /= []]
+tranposta [] = []
+transposta m = [head x | x <- m]:transposta[tail x|x<-m, tail x /= []]
 
 -- transposta [[1,2], [3,4]] == [[1,3], [2,4]]
 -- transposta [[1,2,3], [4,5,6]] == [[1,4], [2,5], [3,6]]
@@ -56,11 +57,11 @@ prodInterno x1 x2 = head x1 * head x2 + prodInterno (tail x1) (tail x2)
 
 -- 6
 prodMat :: Matriz -> Matriz -> Matriz
-prodMat m1 m2 = prodMatAux m1 (transposta m2)
-prodMatAux :: Matriz -> Matriz -> Matriz
-prodMatAux [] [] = []
-prodMatAux m1 m2 = [[prodInterno v1 v2 | v2 <- m2] | v1 <- m1]
+prodMat m1 m2 = prodMatAux m1 (tranposta m2)
 
+prodMatAux::Matriz -> Matriz -> Matriz
+prodMatAux [] [] = []
+prodMatAux m1 m2 =[[prodInterno v1 v2 | v2 <- m2]|v1 <- m1]
 data Arv a = F | N a (Arv a) (Arv a)
     deriving(Show)
 

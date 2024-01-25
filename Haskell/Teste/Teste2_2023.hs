@@ -3,7 +3,7 @@ type Zoo = [Species]
 
 -- 1
 isEndangered :: Species -> Bool
-isEndangered (_, count) = count <= 100
+isEndangered(name,count) = if(count<=100)then True else False
 
 -- Exemplos
 species1 :: Species
@@ -14,31 +14,31 @@ species2 = ("Elephant", 120)
 
 -- 2
 updateSpecies :: Species -> Int -> Species
-updateSpecies (name, _) newCount = (name, newCount)
+updateSpecies(name,oldCount) newCount = (name,newCount+oldCount)
 
 -- 3
 filterSpecies :: Zoo -> (Species -> Bool) -> Zoo
-filterSpecies [] _ = []
-filterSpecies (animal:animals) function = if function animal then animal : next else next
- where next = filterSpecies animals function
+filterSpecies []_ = []
+filterSpecies(animal:animals) function = if (function animal) then ([animal]++ next) else next  
+  where next =filterSpecies animals function
 
 isLargeSpecies :: Species -> Bool
 isLargeSpecies (_, count) = count > 100
 
 -- 4
 countAnimals :: Zoo -> Int
-countAnimals animals = sum (map (\(_, count) -> count) animals)
+countAnimals animals = sum(map(\(name,count)->count)animals)
 
 -- 5
 substring :: (Integral a) => String -> a -> a -> String
-substring xs start end = take (fromIntegral end+1) (drop (fromIntegral start) xs)
+substring xs start end = take (fromIntegral end+1)(drop(fromIntegral start) xs)
 
 -- 6
 hasSubstr :: String -> String -> Bool
 hasSubstr xs str = hasSubstrHelper xs str str
 
-hasSubstrHelper :: String -> String -> String -> Bool
-hasSubstrHelper _ [] _ = True
+hasSubstrHelper::String -> String -> String -> Bool
+hasSubstrHelper _[]_ = True
 
 -- 7
 {-getAnimalName :: Species -> String
