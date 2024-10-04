@@ -276,6 +276,19 @@ mediana x y z
 mediana :: (Ord a, Num a) => a -> a -> a -> a
 mediana x y z = (x + y + z) - max x (max y z) - min x (min y z)
 
+
+-- 1.14.a)
+{-curta :: [a] -> Bool
+curta xs = length xs <= 2-}
+
+
+-- 1.14.b) 
+curta :: [a] -> Bool
+curta []       = True    -- Lista vazia
+curta [_]      = True    -- Lista com um elemento
+curta [_, _]   = True    -- Lista com dois elementos
+curta _        = False   -- Lista com mais de dois elementos
+
     
 
 
