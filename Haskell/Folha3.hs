@@ -142,9 +142,9 @@ factores n = fatorar n primos
 calcPi1 :: Int -> Double
 calcPi1 n = 4 * sum (take n (zipWith (/) (cycle [1, -1]) [1, 3..]))
 
-calcPi2 :: Int -> Double
+{- calcPi2 :: Int -> Double
 calcPi2 n = 3 + sum (take n (zipWith3 (\s a b c -> s * (4 / (a * b * c))) (cycle [1, -1]) [2,4..] [3,5..] [4,6..]))
-
+-}
 
 
 
