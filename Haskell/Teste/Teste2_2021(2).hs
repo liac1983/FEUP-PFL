@@ -17,6 +17,7 @@ dupsAux (x:xs) r
     |r = x:x:dupsAux xs False
     |otherwise =x:dupsAux xs True
 
+
 -- 3
 transforma :: String -> String
 transforma [] = []
@@ -72,4 +73,5 @@ equilibradaAux (N a (N b b1 b2)(N c c1 c2)) = b == c && equilibradaAux(N b b1 b2
 -- 9
 {-f::(a->b->c)->b->a->c1
 f fun b a = fun a b-}
+
 
