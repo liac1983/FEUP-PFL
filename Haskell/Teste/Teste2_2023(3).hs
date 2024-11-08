@@ -35,6 +35,7 @@ hasSubstrHelper (x:xs) (y:ys) str
     | x == y = hasSubstrHelper xs ys str
     |otherwise = hasSubstrHelper xs str str 
 
+
 -- 7
 getAnimalName :: Species -> String
 getAnimalName (animal, _) = animal
@@ -55,6 +56,7 @@ rabbits = 2 : 3 : zipWith (+) rabbits (tail rabbits)
 -- 9
 rabbitYears :: (Integral a) => a -> Int
 rabbitYears year = length ([y | y <- (take (fromIntegral year) rabbits), y < year])
+
 
 -- 10 
 data Dendrogram = Leaf String | Node Dendrogram Int Dendrogram
@@ -89,5 +91,4 @@ inBoundsHelper (Leaf name) currentDistance maxDistance
 inBoundsHelper (Node left dist right) currentDistance maxDistance = 
     inBoundsHelper left (currentDistance - dist) maxDistance ++
     inBoundsHelper right (currentDistance + dist) maxDistance
-
 
