@@ -280,6 +280,7 @@ get_all_nodes(ListOfAirports) :-
     ), ListOfAirports).
 
 % b) most_diversified(-Company)
+% Retorna a companhia com mais cidades
 most_diversified(Company) :-
     setof(City, OtherCompany^OtherCity^FlightNumber^Time^Duration^(
         flight(City, OtherCity, Company, FlightNumber, Time, Duration) ;
@@ -436,7 +437,7 @@ flight_path_cycle(Origin, Destination, ExcludeFlight) :-
     member(ExcludeFlight, Path).
 
 % 5
-
+% Não percebo
 % unifiable(+L1, +Term, -L2)
 unifiable(L1, Term, L2) :-
     include(can_unify(Term), L1, L2).

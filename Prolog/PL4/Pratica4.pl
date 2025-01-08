@@ -199,6 +199,32 @@ number_from_digits([D|Ds], Acc, Number) :-
 
 
 % 5.e
+% Predicado principal
+read_until_between(Min, Max, Value) :-
+    format('Please enter a number between ~w and ~w: ', [Min, Max]),
+    read_number(Input),
+    (   
+        Input >= Min, Input =< Max ->
+        Value = Input,  % Sucesso: o número está dentro do intervalo
+        format('You entered: ~w, which is valid.~n', [Value])
+    ;
+        % Caso contrário, solicita novamente
+        format('Invalid input. The number must be between ~w and ~w.~n', [Min, Max]),
+        read_until_between(Min, Max, Value)
+    ).
+
+% Predicado auxiliar para garantir que o valor inserido é um número inteiro
+read_number(Number) :-
+    read(Input),  % Lê a entrada do utilizador
+    (   
+        integer(Input) ->
+        Number = Input  % Sucesso: a entrada é um número inteiro
+    ;
+        % Caso contrário, pede novamente
+        format('Invalid input. Please enter an integer number.~n'),
+        read_number(Number)
+    ).
+
 
 % 5.f
 
