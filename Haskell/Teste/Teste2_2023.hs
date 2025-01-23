@@ -5,12 +5,8 @@ type Zoo = [Species]
 isEndangered :: Species -> Bool
 isEndangered(name,count) = if(count<=100)then True else False
 
--- Exemplos
-species1 :: Species
-species1 = ("Tiger", 80)
 
-species2 :: Species
-species2 = ("Elephant", 120)
+
 
 -- 2
 updateSpecies :: Species -> Int -> Species
