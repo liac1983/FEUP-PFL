@@ -5,9 +5,6 @@ type Zoo = [Species]
 isEndangered :: Species -> Bool
 isEndangered(name,count) = if(count<=100)then True else False
 
-
-
-
 -- 2
 updateSpecies :: Species -> Int -> Species
 updateSpecies(name,oldCount) newCount = (name,newCount+oldCount)
