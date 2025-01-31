@@ -148,6 +148,14 @@ predZ:-
 % implementar recursão onde a chamada recursiva é a última
 % operação realizada por um predicado antes de retornar o resultado
 
+% 13
+% Resposta B
+
+% Fatos em Prolog (por exemplo, fact(a).) não envolvem recursão. Recursão só aparece em regras.
+% Um argumento extra pode ser usado como um acumulador para converter recursão comum em recursão de cauda. Isso é uma prática comum para melhorar a eficiência.
+% O uso do corte (!) não garante que um predicado seja recursivo de cauda. Ele serve para evitar backtracking, mas não altera a estrutura da recursão.
+% Não há informações sobre predZ/0, mas recursão em um predicado sem argumentos (/0) geralmente não faz sentido.
+
 % 14
 % não conseguimos aceder ao primeiro elemento da lista com um predicado O(1)
 % nem obter o comprimento da lista
