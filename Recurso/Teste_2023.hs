@@ -6,12 +6,14 @@ type Zoo = [Species]
 -- receives a species and determines if it is endangered.
 isEndangered :: Species -> Bool
 isEndangered(name, count)=if(count <= 100) then True else False
+-- uma especie está em vias de extinção se forem menos que 100
 
 -- 2
 -- given a Species and an amount of newborn babies, returns a new instance of
 -- Species with the updated population
 updateSpecies :: Species -> Int -> Species
 updateSpecies(name, oldCount) newCount=(name, newCount)
+-- atualizar a população de uma especie se inserirmos mais elementos
 
 -- 3
 -- given the list species of a zoo and a predicate (i.e. a function that performs
@@ -29,11 +31,14 @@ filterSpecies (animal:animals) function =
 -- given the list of species of a zoo, counts the total population of the zoo
 countAnimals :: Zoo -> Int
 countAnimals animals = sum(map(\(name, count)->count)animals)
+-- soma os animais das especies que estão na lista
 
 -- 5
 -- which returns the substring of a given string between an initial and final index
 substring :: (Integral a) => String -> a -> a -> String
 substring xs start end = take (fromIntegral end + 1)(drop (fromIntegral start) xs)
+-- extrai os primeiros caracteres da string ajustada
+-- remove os primeiros start caracteres
 
 -- 6
 -- determines if the first string argument contains the second string argument
@@ -86,14 +91,21 @@ sortSpeciesWithSubstr animals str =
 -- returns an infinite list with the rabbit population of each year (starting at year 0)
 rabbits :: (Integral a) => [a]
 rabbits = 2 : 3 : zipWith (+) rabbits (tail rabbits)
+-- Soma elemento por elemento de duas listas
 
 -- 9
 -- returns the number of years needed for the rabbit population to be greater or equal
 -- to the input integral value
 rabbitYears :: (Integral a) => a -> Int
 rabbitYears year = length ([y|y <- (take(fromIntegral year) rabbits), y < year])
+-- Lista por compreensão : pega os primeiros year elementos da lista infinita de rabbits
+-- filtrar apenas o sanos em que a população de coelhos foi menor que o valor fornecido 
 
 -- 10
+-- Define o tipo de dados `Dendrogram`, que pode ser:
+-- 1. Uma folha (`Leaf`) contendo uma string.
+-- 2. Um nó (`Node`) contendo duas subárvores (`left` e `right`) e um valor inteiro (`x`),
+--    que representa a distância horizontal entre as subárvores.
 data Dendrogram = Leaf String 
                 | Node Dendrogram Int Dendrogram
                 deriving (Show)
@@ -116,4 +128,3 @@ dendroInBounds (Node left dist right) limit
     |limit < 0 = [] -- Se o limite já fro negativo, não há folhas válidas 
     |otherwise = dendroInBounds left (limit - dist) ++ dendroInBounds right (limit - dist)
     -- Subtrai a distância acumulada do limite e verifica as subárvores 
-    
