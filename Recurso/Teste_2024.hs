@@ -12,9 +12,9 @@ myLeague = [
 -- returns the name of the match's winner
 winner :: Match -> String
 winner ((home, away),(hScore, aScore))
-    | hScore > aScore = home
-    | hScore < aScore = away
-    |otherwise = "draw"
+    | hScore > aScore = home -- a equip ada casa ganha
+    | hScore < aScore = away -- equipa de fora ganha
+    |otherwise = "draw" -- empate
 
 -- 2
 --  given a team and a matchday, returns the score obtained by that team
@@ -30,15 +30,18 @@ matchDayScore team (((home, away), (hScore, aScore)) : matches)
     | otherwise = matchDayScore team matches  -- Time não participou dessa partida
 
 -- 3
+-- Calcula o total de pontos de um time (`t`) em uma liga (`League`).
 leagueScore :: String -> League -> Int
-leagueScore t = foldr (\d acc -> matchDayScore t d + acc) 0
+leagueScore t = foldr (\d acc -> matchDayScore t d + acc) 0 
+-- Itera sobre a lista de rodadas (`League`), acumulando os pontos.
 
+-- Ordena uma lista (`[a]`) com base em uma condição (`cmp`).
 sortByCond :: Ord a => [a] -> (a -> a -> Bool) -> [a]
-sortByCond [] _ = []
-sortByCond [x] _ = [x]
-sortByCond l cmp = merge (sortByCond l1 cmp) (sortByCond l2 cmp) cmp
-  where (l1 ,l2) = splitAt (div (length l) 2) l
-
+sortByCond [] _ = [] -- se a lista estiver vazia retorna a lista vazia
+sortByCond [x] _ = [x] -- uma lista só com um elemento já está ordenada
+sortByCond l cmp = merge (sortByCond l1 cmp) (sortByCond l2 cmp) cmp -- Divide a lista em duas metades (`l1` e `l2`) e ordena recursivamente cada metade.
+  where (l1 ,l2) = splitAt (div (length l) 2) l -- Divide a lista `l` em duas partes
+-- Mescla duas listas ordenadas (`[a]` e `[b]`) em uma única lista ordenada
 merge :: Ord a => [a] -> [a] -> (a -> a -> Bool) -> [a]
 merge [] l _ = l
 merge l [] _ = l
@@ -58,8 +61,13 @@ ranking league =
 -- returns the amount of matchdays in the league where at least one match ended in a draw.
 numMatchDaysWithDraws :: League -> Int
 numMatchDaysWithDraws league = length $ filter hasDraw league
+ -- 1. Filtra apenas as rodadas que têm pelo menos um empate.
+    -- 2. Usa `length` para contar quantas rodadas filtradas existem.
   where
+    -- Função auxiliar para verificar se uma rodada contém um empate.
     hasDraw :: MatchDay -> Bool
+    -- Usa `any` para verificar se pelo menos uma partida da rodada
+        -- satisfaz o predicado `isDraw`.
     hasDraw matchDay = any isDraw matchDay
 
 
@@ -68,10 +76,11 @@ numMatchDaysWithDraws league = length $ filter hasDraw league
 -- starting at 1) and ws are the names of teams from that matchday that won their 
 -- match with a goal difference of at least 3 goals. 
 bigWins :: League -> [(Int,[String])]
-bigWins league = [(i, [team | ((home, away), (hScore, aScore)) <- matchDay, 
-                              (team == home && hScore - aScore >= 3) || 
-                              (team == away && aScore - hScore >= 3)])
-                  | (i, matchDay) <- zip [1..] league]
+-- Cria uma lista de pares (índice da rodada, lista de vencedores com diferença de gols >= 3).
+bigWins league = [(i, [team | ((home, away), (hScore, aScore)) <- matchDay, -- Itera sobre cada partida na rodada. 
+                              (team == home && hScore - aScore >= 3) ||     -- Time da casa ganhou por 3 ou mais gols.
+                              (team == away && aScore - hScore >= 3)])      -- Time visitante ganhou por 3 ou mais gols.
+                  | (i, matchDay) <- zip [1..] league]                      -- Associa os índices às rodadas da liga.
 
 -- 6
 -- returns a list of winning streaks, described by a triple (t,s,e), where:
@@ -123,9 +132,10 @@ gTest2 = [("0","1",4),("2","3",2)]
 -- returns the cities adjacent to a particular city (i.e. cities with a direct edge between them) and the respective distances to them.
 adjacent :: RoadMap -> City ->[(City,Distance)]
 adjacent roadMap city = 
+  -- Itera por cada estrada (caminho) no mapa rodoviário.
   [(c, d) | (c1, c2, d) <- roadMap, 
-            (c1 == city && c2 /= city && (c, d) == (c2, d)) || 
-            (c2 == city && c1 /= city && (c, d) == (c1, d))]
+            (c1 == city && c2 /= city && (c, d) == (c2, d)) ||  -- Se a cidade é `c1`, inclui `c2` e a distância `d`.
+            (c2 == city && c1 /= city && (c, d) == (c1, d))]    -- Se a cidade é `c2`, inclui `c1` e a distância `d`.
 
 
 -- 8

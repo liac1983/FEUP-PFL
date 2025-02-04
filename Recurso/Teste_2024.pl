@@ -38,21 +38,21 @@ shared_genres(Title1, Title2, CommonGenres):-
     common_elements(Genres1, Genres2, CommonGenres).
 
 % Determine common elements between two lists
-common_elements([], _L, []).
+common_elements([], _L, []). % se a lista estiver vazia não exitem elementos em comum
 common_elements([H|T], L, [H|R]):-
-    member(H, L), !, 
-    common_elements(T, L, R).
-common_elements([_|T], L, R):-
+    member(H, L), !, % verifica se o header pertence à lista 
+    common_elements(T, L, R). % chamda recursiva com o resto dos elementos da lista 
+common_elements([_|T], L, R):- % para os proximos elementos da lista 
     common_elements(T, L, R).
 
 % 4
 % determines the Jaccard coefficient between the two books received as first two arguments, considering the genres of each book as the measure of similarity
 similarity(Title1, Title2, Similarity) :-
-    shared_genres(Title1, Title2, Intersection),
-    book(Title1, _ID1, _Year1, _Pages1, Genres1),
+    shared_genres(Title1, Title2, Intersection), -- obtém os generos partilhados pelos dois livros 
+    book(Title1, _ID1, _Year1, _Pages1, Genres1), -- obter as listas de genreos
     book(Title2, _ID2, _Year2, _Pages2, Genres2),
-    union(Genres1, Genres2, Union),
-    length(Intersection, LI),
+    union(Genres1, Genres2, Union), -- união das duas listas de generos
+    length(Intersection, LI), 
     length(Union, LU),
     Similarity is LI / LU.
 
@@ -75,29 +75,38 @@ gives_gift_to(sandrino, 'Predator', marciliano).
 
 % 6
 % unifies the second argument with the number of people who form the circle of gifts that includes the person received as first argument.
+% Calcula o número de pessoas que formam o círculo de presentes que inclui a pessoa recebida como primeiro argumento.
 circle_size(Person, Size):-
-    collect([Person], People),
-    length(People, Size).
+    collect([Person], People), % Inicializa a coleta do círculo a partir da pessoa inicial.
+    length(People, Size). % Calcula o tamanho do círculo
 
+% Predicado auxiliar para coletar todas as pessoas no círculo de presentes.
 collect( [H|T], People):-
-    gives_gift_to(H, _, N),
-    \+ member(N, [H|T]), !,
-    collect( [N,H|T], People).
-collect(People, People).
+    gives_gift_to(H, _, N), % Verifica quem recebe um presente da pessoa atual (H).
+    \+ member(N, [H|T]), !, % Garante que a próxima pessoa (N) ainda não foi visitada.
+    collect( [N,H|T], People). % Adiciona N à lista e continua a coleta.
+collect(People, People). % Caso não haja mais pessoas a adicionar, finaliza a coleta.
 
 % 7
 :-use_module(library(lists)).
 % unifies People with the list of people belonging to the largest circle in the book club.
 largest_circle(People):-
-    all_people(Everyone),
+    all_people(Everyone), % Obtém a lista de todas as pessoas no clube do livro.
+    % Para cada pessoa na lista de todos os membros...
+    % Coleta o círculo completo de presentes a partir dessa pessoa.
+    % Ordena a lista de pessoas no círculo (remove duplicados e organiza a lista).
+    % Calcula o tamanho do círculo (número de pessoas no círculo).
     setof(Size-Person-Sorted, Persons^(member(Person, Everyone), collect([Person], Persons), sort(Persons, Sorted), length(Sorted, Size)), Triples),
-    last(Triples, MaxSize-_-_),
+    last(Triples, MaxSize-_-_), % Obtém o maior tamanho (`MaxSize`) de círculo a partir do último elemento da lista `Triples`.
     setof(Persons,  P^member(MaxSize-P-Persons, Triples), LargestGroups),
+    % Para cada tripla cujo tamanho do círculo (`Size`) é igual a `MaxSize`,
+    % coleta os grupos correspondentes (`Persons`).
     member(People, LargestGroups).
-
+    % Seleciona um grupo entre os maiores grupos e unifica com `People`.
+% Obtém a lista de todas as pessoas envolvidas no clube do livro.
 all_people(List):- 
-    findall(X, (gives_gift_to(X, _, _) ; gives_gift_to(_, _, X)), Temp),
-    sort(Temp, List).
+    findall(X, (gives_gift_to(X, _, _) ; gives_gift_to(_, _, X)), Temp), % Coleta todas as pessoas que dão ou recebem presentes.
+    sort(Temp, List). % Remove duplicados e ordena a lista de pessoas.
 
 % 8
 % Verifica se X é uma variável não instanciada.
@@ -115,44 +124,44 @@ all_people(List):-
 % 10
 % converts a non-negative integer number Dec into a list of bits representing that number, using exactly N bits. If the number of bits is insufficient to represent the number, the predicate should fail.
 dec2bin(Dec, BinList, N):-
-    Dec >= 0,
-	dec2bin(Dec, [], List, N).
+    Dec >= 0,  % Verifica se o número decimal é não negativo.
+	dec2bin(Dec, [], List, N). % Chama a função auxiliar com uma lista acumuladora vazia.
 
-dec2bin(0, List, List, 0):- !.
-dec2bin(Dec, Acc, List, N):-
-	N > 0,
-	Bit is Dec mod 2,
-	Next is Dec div 2,
-	N1 is N - 1,
-	dec2bin(Next, [Bit|Acc], List, N1).
+dec2bin(0, List, List, 0):- !. % quando o número decimal é 0 e o tamanho N chega a 0.
+dec2bin(Dec, Acc, List, N):- % processa o número decimal para calcular os bits binários.
+	N > 0, % Certifica-se de que ainda há bits restantes para calcular.
+	Bit is Dec mod 2, % Calcula o bit menos significativo
+	Next is Dec div 2, % Atualiza o número decimal para o próximo passo 
+	N1 is N - 1, % Reduz o número de bits restantes.
+	dec2bin(Next, [Bit|Acc], List, N1). % Adiciona o bit ao acumulador e continua a recursão.
 
 % 11
 % recebe um número decimal e o número de bits para o representar, bem como Padding - o número de zeros a adicionar de cada lado da representação binária resultante - devolvendo em List a lista de bits resultante
 initialize(DecNumber, Bits, Padding, List):-
-    dec2bin(Dec, Mid, N),
-    dec2bin(0, Side, Padd),
-    append([Side, Mid, Side], List).
+    dec2bin(Dec, Mid, N), % Converte o número decimal DecNumber para uma lista binária com o número especificado de Bits.
+    dec2bin(0, Side, Padd), % Gera uma lista de zeros (padding) com comprimento igual a Padding.
+    append([Side, Mid, Side], List). % Concatena os zeros (Side) antes e depois da lista binária (Mid) para formar a lista final.
 
 % 12
 % imprime no terminal uma representação textual de uma lista de bits, representando 0 como um ponto ('.'), 1 como um M maiúsculo ('M'), e separando cada byte (conjunto de 8 bits) com uma barra vertical ('|').
 print_line(0, []):- !,
     write('|'), nl.
-print_line(_, []):- !, nl.
-print_line(0, Bits):- !,
+print_line(_, []):- !, nl. %  Lista de bits está vazia, mas ainda há bits no byte atual.
+print_line(0, Bits):- !, % Caso em que o contador do byte chegou a 0, mas ainda há bits restantes na lista.
     write('|'),
     print_line(8, Bits).
-print_line(N, [Bit|Bits]):-
-    N1 is N-1,
-    translate(Bit, Char),
-    put_char(Char),
-    print_line(N1, Bits).
+print_line(N, [Bit|Bits]):- % Processa o próximo bit da lista.
+    N1 is N-1, % Reduz o contador do byte.
+    translate(Bit, Char), % Converte o bit (0 ou 1) para o caractere correspondente ('.' ou 'M').
+    put_char(Char), % Imprime o caractere no terminal.
+    print_line(N1, Bits). % Continua processando o restante da lista de bits.
 
 translate(0, '.').
 translate(1, 'M').
 
 print_generation(L):-
     write('|'),
-    print_line(8, L).
+    print_line(8, L). % Inicia a impressão da lista com o contador de bytes configurado para 8.
 
 % 13
 % Predicado principal: atualiza as regras binárias com base no número dado.
@@ -210,26 +219,27 @@ update_rule(_).
 % 14
 % recebe uma lista de valores binários e calcula a geração seguinte, aplicando as regras existentes a cada posição. Os vizinhos em falta (para o primeiro e último elementos) são assumidos como sendo zeros.
 next_gen(Previous, Next):-
-    apply_rules(0, Gen0, Gen1).
+    apply_rules(0, Gen0, Gen1). % Assume que o vizinho à esquerda do primeiro elemento é 0.
 
-apply_rules(Left, [Self], [New]):-
-    rule(Left-Self-0, New).
-apply_rules(Left, [Self, Right | Rest], [New | Tail]):-
-    rule(Left-Self-Right, New),
-    apply_rules(Self, [Right|Rest], Tail).
+apply_rules(Left, [Self], [New]):- % Lista de um único elemento
+    rule(Left-Self-0, New). % Aplica a regra à posição atual
+apply_rules(Left, [Self, Right | Rest], [New | Tail]):- % Processa o próximo elemento da lista.
+    rule(Left-Self-Right, New), % Aplica a regra à posição atual.
+    apply_rules(Self, [Right|Rest], Tail). % Continua o processamento com o restante da lista.
 
 % 15
+% Simula uma série de gerações de valores binários, começando a partir de uma geração inicial.
 play(DecNumber, Bits, Padding, Rule, N):-
-    initialize(Init, N, Padd, Gen0),
-    update_rule(Rule),
-    play_gens(Gens, Gen0).
-
+    initialize(Init, N, Padd, Gen0), % Inicializa a geração inicial com os parâmetros fornecidos.
+    update_rule(Rule), % Atualiza as regras de acordo com o número fornecido.
+    play_gens(Gens, Gen0). % Inicia a simulação das gerações.
+% Quando resta apenas 1 geração para processar.
 play_gens(1, Gen):- !,
-    print_generation(Gen).
-play_gens(N, Gen0):-
-    N1 is N -1,
-    print_generation(Gen0),
-    next_gen(Gen0, Gen1),
-    play_gens(N1, Gen1).
+    print_generation(Gen). % Imprime a geração atual.
+play_gens(N, Gen0):- % Processa múltiplas gerações.
+    N1 is N -1, % Decrementa o número de gerações restantes.
+    print_generation(Gen0), % Imprime a geração atual.
+    next_gen(Gen0, Gen1), % Calcula a próxima geração.
+    play_gens(N1, Gen1). % Continua o processamento com a próxima geração.
 
 
